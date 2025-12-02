@@ -8,6 +8,8 @@
 
 const char DEFAULT_FILE[] = "puzzle/input.txt";
 
+int abs(int n) { return (n < 0) ? -n : n; }
+
 int main(int argc, char *argv[]) {
 
   FILE *input;
@@ -21,9 +23,9 @@ int main(int argc, char *argv[]) {
   // Check if file opened correctly. Check for file not found error.
   if (!input) {
     if (errno == ENOENT || errno == EACCES) {
-      printf(stderr, "Puzzle input not found\n");
+      fprintf(stderr, "Puzzle input not found\n");
     } else {
-      printf(stderr, "Error opening file\n");
+      fprintf(stderr, "Error opening file\n");
     }
 
     return EXIT_FAILURE;
@@ -31,6 +33,7 @@ int main(int argc, char *argv[]) {
 
   int state = 50; // Initial dial state
   int zeroCount = 0;
+  int totalClickCount = 0;
 
   for (int i = 0; i < INPUT_SIZE; ++i) {
     int mul = 1;
@@ -42,7 +45,7 @@ int main(int argc, char *argv[]) {
         break;
       } else {
         if (ferror(input)) {
-          printf(stderr, "Input error occured\n");
+          fprintf(stderr, "Input error occured\n");
         }
         fclose(input);
         return EXIT_FAILURE;
@@ -57,18 +60,29 @@ int main(int argc, char *argv[]) {
 
     // printf("Value: %d, Current state: %d, ", value, state);
 
-    state = (state + value + 100) % 100;
+    int clickCount = abs((state + value) / 100);
+    if (-value >= state && state != 0) {
+      clickCount++;
+    }
 
-    // printf("New state: %d\n", state);
+    state = (state + value + 100) % 100;
+    if (state < 0)
+      state += 100;
+
+    // printf("New state: %d, Clicks this turn: %d\n", state, clickCount);
 
     if (state == 0)
       zeroCount++;
+
+    totalClickCount += clickCount;
   }
 
   printf("Password: %d\n", zeroCount);
+  printf("CLICK Password: %d\n", totalClickCount);
+
   if (fclose(input) != 0) {
-    printf(stderr,
-           "Warning: unable to close file. Something went very wrong. \n");
+    fprintf(stderr,
+            "Warning: unable to close file. Something went very wrong. \n");
   }
 
   return EXIT_SUCCESS;
