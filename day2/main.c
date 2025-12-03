@@ -144,9 +144,9 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
 
-  long long result =
-      0; // I'm kind of haphazardly switching between long types here.
-  // Too lazy to fix it now, it works anyways.
+  // I'm kind of haphazardly switching between long types here. Too lazy to fix
+  // it now, it works anyways.
+  long long result = 0;
 
   for (int i = 0; i < rangeAmount; ++i) {
     // printf("%ld - %ld\n", rangeArray[i][0], rangeArray[i][1]);
